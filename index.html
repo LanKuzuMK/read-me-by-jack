@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Read Me by Jack — Personal Blog</title>
+  <link rel="icon" type="image/jpeg" href="/favicon.jpg" />
+  <link rel="apple-touch-icon" href="/favicon.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Khmer:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/src/styles/main.css" />
+</head>
+<body>
+  <!-- Preloader Curtain -->
+  <div id="preloader" class="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__eyebrow">JACKFX // PERSONAL BLOG</div>
+      <div class="preloader__title">Read Me <em>by Jack</em></div>
+      <div class="preloader__bar-track">
+        <div id="preloader-bar" class="preloader__bar-fill"></div>
+      </div>
+      <div class="preloader__meta">
+        <span id="preloader-percent">000%</span>
+        <span>LOADING SCENE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Cursor -->
+  <div id="cursor" class="cursor" aria-hidden="true">
+    <div class="cursor__dot"></div>
+    <div class="cursor__ring"></div>
+  </div>
+
+  <!-- Fixed Three.js Canvas -->
+  <canvas id="webgl-canvas" class="webgl-canvas"></canvas>
+
+  <!-- Scroll-Responsive Atmospheric Glow & Vignette -->
+  <div id="atmosphere-overlay" class="atmosphere-overlay" aria-hidden="true"></div>
+
+  <!-- Interactive 3D Object Inspect HUD Tooltip -->
+  <div id="inspect-hud" class="inspect-hud" aria-live="polite">
+    <div class="inspect-hud__badge">INSPECT</div>
+    <div class="inspect-hud__title" id="inspect-hud-title">The Open Volume</div>
+    <div class="inspect-hud__desc" id="inspect-hud-desc">Hardcover notebook with hand-bound linen cloth and stratified paper edges.</div>
+    <div class="inspect-hud__close">Click object or Esc to return</div>
+  </div>
+
+  <!-- Fixed Header -->
+  <header class="studio-header">
+    <a href="#chapter-hero" class="brand" data-magnetic>
+      <img src="/favicon.jpg" alt="JACKFX" class="brand__logo" />
+      <span class="brand__text">
+        <strong>Welcome to my personal blog</strong>
+        <small>Just released new app</small>
+      </span>
+    </a>
+
+    <nav class="studio-nav" aria-label="Primary">
+      <a href="#chapter-manuscript" class="nav-link" data-magnetic><span>01</span> Notebook</a>
+      <a href="#chapter-artifact" class="nav-link" data-magnetic><span>02</span> Desk</a>
+      <a href="#chapter-release" class="nav-link" data-magnetic><span>03</span> Download</a>
+      <a href="#chapter-reply" class="nav-link" data-magnetic><span>04</span> Reply</a>
+    </nav>
+
+    <div class="header-actions">
+      <button id="sound-toggle-btn" class="pill-btn pill-btn--ghost" type="button" data-magnetic title="Toggle Audio (Muted by default)">
+        <svg id="icon-sound-off" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+          <line x1="23" y1="9" x2="17" y2="15"/>
+          <line x1="17" y1="9" x2="23" y2="15"/>
+        </svg>
+        <svg id="icon-sound-on" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+        <span id="sound-label">Audio</span>
+      </button>
+
+      <button id="theme-toggle-btn" class="pill-btn pill-btn--ghost" type="button" data-magnetic title="Toggle Day / Night Mode">
+        <svg id="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg id="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none">
+          <circle cx="12" cy="12" r="5" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
+        <span id="theme-label">Night</span>
+      </button>
+
+      <button id="camera-reset-btn" class="pill-btn pill-btn--ghost" type="button" data-magnetic title="Reset Camera">
+        <span class="pulse-dot"></span>
+        <span>Reset View</span>
+      </button>
+
+      <a
+        href="https://drive.google.com/file/d/1iZ2auLwjii-Xx6qsM7pjB4lRCV5AUq62/view?usp=drivesdk"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="pill-btn pill-btn--silver"
+        data-magnetic
+      >
+        <span>Get App</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M7 17L17 7M17 7H8M17 7V16" />
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Left Scroll Telemetry Rail -->
+  <aside class="telemetry-rail" aria-hidden="true">
+    <div class="telemetry-rail__label" id="chapter-indicator">01 / INTRO</div>
+    <div class="telemetry-rail__track">
+      <div class="telemetry-rail__fill" id="scroll-progress-bar"></div>
+    </div>
+    <div class="telemetry-rail__coords" id="camera-telemetry">CAM 0.2 / 0.4 / 6.8</div>
+  </aside>
+
+  <!-- Smooth Scroll Container -->
+  <main id="smooth-content" class="scroll-sections">
+    <!-- CHAPTER 01: HERO -->
+    <section id="chapter-hero" class="chapter chapter--hero" data-chapter="0">
+      <div class="chapter__inner">
+        <div class="hero-layout">
+          <div class="hero-text-pane">
+            <div class="hero-badge reveal-line">
+              <span class="hero-badge__dot"></span>
+              <span>BUILT FEB 10, 2022 &bull; POSTED FEB 15, 2023 &bull; JACKFX</span>
+            </div>
+
+            <h1 class="hero-title">
+              <span class="line-mask"><span class="line-inner">Read Me</span></span>
+              <span class="line-mask"><span class="line-inner hero-title--italic">by Jack</span></span>
+            </h1>
+
+            <p class="hero-subtitle reveal-fade">
+              Finished building the app on February 10, 2022, and published this post a year later.
+              Scroll to explore, or click any 3D desk object to inspect.
+            </p>
+
+            <div class="hero-cta-row reveal-fade">
+              <a href="#chapter-release" class="btn-primary" data-magnetic>
+                <span>Go to Download</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M12 5v14M5 12l7 7 7-7" />
+                </svg>
+              </a>
+              <div class="scroll-cue">
+                <span class="scroll-cue__line"></span>
+                <span>Scroll to explore</span>
+              </div>
+            </div>
+          </div>
+          <!-- Right column remains visually unobstructed so the open book, page edges, and desk are 100% visible -->
+          <div class="hero-stage-spacer" aria-hidden="true"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 02: THE NOTEBOOK -->
+    <section id="chapter-manuscript" class="chapter chapter--split" data-chapter="1">
+      <div class="chapter__inner chapter__inner--right">
+        <div class="glass-card glass-card--editorial" data-tilt>
+          <div class="card-kicker">01 &mdash; THE NOTEBOOK</div>
+          <h2 class="section-title">
+            Read Me, <em>Bound</em> in Silver
+          </h2>
+          <p class="section-body">
+            Started from the open hardcover sketch with <strong>J&middot;A&middot;C&middot;K</strong>
+            tabs along the spine. Here it sits in open space, with curved pages that lift
+            gently as you scroll through the post.
+          </p>
+
+          <div class="spec-grid">
+            <div class="spec-item">
+              <span class="spec-item__label">Author</span>
+              <span class="spec-item__value">JACKFX</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-item__label">App Built</span>
+              <span class="spec-item__value">February 10, 2022</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-item__label">Post Date</span>
+              <span class="spec-item__value">February 15, 2023</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-item__label">Category</span>
+              <span class="spec-item__value">Education</span>
+            </div>
+            <div class="spec-item spec-item--wide">
+              <span class="spec-item__label">Tag</span>
+              <span class="spec-item__value khmer-text">អាចសាកល្បងដោនលោតបាន</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 03: THE DESK (GLASSES, PEN & READ ME RIBBON) -->
+    <section id="chapter-artifact" class="chapter chapter--split" data-chapter="2">
+      <div class="chapter__inner chapter__inner--left">
+        <div class="glass-card glass-card--editorial" data-tilt>
+          <div class="card-kicker">02 &mdash; DESK INSTRUMENTS</div>
+          <h2 class="section-title">
+            Glasses &amp; <em>Pen</em> in Space
+          </h2>
+          <p class="section-body">
+            The rectangular frames and pen from the original drawing sit in the foreground in
+            brushed silver and pale blue glass, with the tilted <em>&ldquo;Read Me&rdquo;</em>
+            banner floating right behind them.
+          </p>
+
+          <div class="feature-list">
+            <div class="feature-row">
+              <span class="feature-row__index">01</span>
+              <div>
+                <h3>Scroll Camera Path</h3>
+                <p>The view glides from the front composition down to the pen and back out as you scroll.</p>
+              </div>
+            </div>
+            <div class="feature-row">
+              <span class="feature-row__index">02</span>
+              <div>
+                <h3>Night Mode Glow</h3>
+                <p>Switch to Night in the top bar to see the blue-silver glow and lights travel with your scroll.</p>
+              </div>
+            </div>
+            <div class="feature-row">
+              <span class="feature-row__index">03</span>
+              <div>
+                <h3>2022 Build, 2023 Post</h3>
+                <p>App finished on February 10, 2022 and shared on February 15, 2023.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 04: THE RELEASE (DOWNLOAD & SOCIAL) -->
+    <section id="chapter-release" class="chapter chapter--center" data-chapter="3">
+      <div class="chapter__inner">
+        <div class="glass-card glass-card--release" data-tilt>
+          <div class="card-kicker">03 &mdash; DOWNLOAD</div>
+          <h2 class="section-title section-title--large">
+            Just Released <em>New App</em>
+          </h2>
+          <p class="section-body section-body--center">
+            You can download the app package directly from Google Drive below, or share
+            this post.
+          </p>
+
+          <div class="download-box">
+            <a
+              href="https://drive.google.com/file/d/1iZ2auLwjii-Xx6qsM7pjB4lRCV5AUq62/view?usp=drivesdk"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-download"
+              data-magnetic
+            >
+              <span class="btn-download__icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+              </span>
+              <span class="btn-download__text">
+                <strong>Download App Package</strong>
+                <small>drive.google.com &bull; Built Feb 10, 2022</small>
+              </span>
+              <span class="btn-download__arrow" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </span>
+            </a>
+          </div>
+
+          <div class="social-bar">
+            <span class="social-bar__label">Links:</span>
+            <div class="social-bar__buttons">
+              <a
+                href="https://github.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="chip-btn"
+                data-magnetic
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                <span>GitHub</span>
+              </a>
+              <a
+                href="https://www.facebook.com/jackurgodking"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="chip-btn"
+                data-magnetic
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
+                </svg>
+                <span>Facebook</span>
+              </a>
+              <a
+                href="https://t.me/TianyiXiong"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="chip-btn"
+                data-magnetic
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+                <span>Telegram</span>
+              </a>
+              <button id="like-btn" type="button" class="chip-btn chip-btn--like" data-magnetic>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                <span id="like-label">Like</span>
+              </button>
+            </div>
+            <span id="like-count-note" class="like-note">Be the first to like this.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 05: NEXT POST & LEAVE A REPLY -->
+    <section id="chapter-reply" class="chapter chapter--reply" data-chapter="4">
+      <div class="chapter__inner chapter__inner--narrow">
+        <!-- Next Post -->
+        <a
+          href="https://bbbjackthegod.wordpress.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="next-portal glass-card"
+          data-magnetic
+        >
+          <div class="next-portal__meta">NEXT POST</div>
+          <div class="next-portal__row">
+            <span class="next-portal__title">
+              Black hole <span class="khmer-text">(ប្រហោងខ្មៅ) បកប្រែ</span>
+            </span>
+            <span class="next-portal__arrow" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </span>
+          </div>
+        </a>
+
+        <!-- Leave a Reply -->
+        <div class="glass-card reply-card">
+          <h2 class="reply-title">Leave a <em>Reply</em></h2>
+          <form id="comment-form" class="reply-form">
+            <textarea
+              id="comment-input"
+              class="reply-textarea"
+              rows="4"
+              placeholder="Write a comment..."
+              required
+            ></textarea>
+
+            <div class="reply-footer">
+              <div class="reply-identity">
+                <div class="identicon" aria-hidden="true">
+                  <svg viewBox="0 0 40 40" width="36" height="36">
+                    <rect width="40" height="40" rx="8" fill="#E6F1FC" />
+                    <path d="M8 8h8v8H8zM24 8h8v8h-8zM16 16h8v8h-8zM8 24h8v8H8zM24 24h8v8h-8z" fill="#7FB3E6" opacity="0.7" />
+                    <circle cx="20" cy="20" r="4" fill="#94A3B8" />
+                  </svg>
+                </div>
+                <input
+                  id="author-input"
+                  type="text"
+                  class="reply-name-input"
+                  placeholder="Add your name"
+                  aria-label="Your name"
+                />
+              </div>
+
+              <button type="submit" class="btn-comment" data-magnetic>
+                <span>Comment</span>
+              </button>
+            </div>
+          </form>
+
+          <ul id="comment-list" class="comment-list" aria-live="polite"></ul>
+        </div>
+
+        <footer class="studio-footer">
+          <span>JACKFX &bull; Read Me by Jack</span>
+          <span>App Built Feb 10, 2022 &bull; Posted Feb 15, 2023</span>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
